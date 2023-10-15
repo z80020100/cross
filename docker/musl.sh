@@ -35,6 +35,7 @@ main() {
 
     # Don't depend on the mirrors of sabotage linux that musl-cross-make uses.
     local linux_headers_site=https://ci-mirrors.rust-lang.org/rustc/sabotage-linux-tarballs
+    local linux_ver=headers-4.19.88
 
     # alpine GCC is built with `--enable-default-pie`, so we want to
     # ensure we use that. we want support for shared runtimes except for
@@ -48,8 +49,8 @@ main() {
         BINUTILS_VER=2.33.1 \
         DL_CMD='curl --retry 3 -sSfL -C - -o' \
         LINUX_HEADERS_SITE="${linux_headers_site}" \
+        LINUX_VER="${linux_ver}" \
         OUTPUT=/usr/local/ \
-        "GCC_CONFIG += --enable-default-pie" \
         "${@}"
 
     purge_packages
