@@ -44,7 +44,7 @@ main() {
     # with popular musl distros.
     hide_output make install "-j$(nproc)" \
         GCC_VER=9.2.0 \
-        MUSL_VER=1.1.24 \
+        MUSL_VER=1.2.3 \
         BINUTILS_VER=2.33.1 \
         DL_CMD='curl --retry 3 -sSfL -C - -o' \
         LINUX_HEADERS_SITE="${linux_headers_site}" \
