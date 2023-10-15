@@ -22,7 +22,7 @@ hide_output() {
 }
 
 main() {
-    local version=0.9.9
+    local version=fe91582
 
     install_packages ca-certificates curl build-essential
 
@@ -30,8 +30,8 @@ main() {
     td="$(mktemp -d)"
 
     pushd "${td}"
-    curl --retry 3 -sSfL "https://github.com/richfelker/musl-cross-make/archive/v${version}.tar.gz" -O
-    tar --strip-components=1 -xzf "v${version}.tar.gz"
+    curl --retry 3 -sSfL "https://github.com/richfelker/musl-cross-make/archive/${version}.tar.gz" -O
+    tar --strip-components=1 -xzf "${version}.tar.gz"
 
     # Don't depend on the mirrors of sabotage linux that musl-cross-make uses.
     local linux_headers_site=https://ci-mirrors.rust-lang.org/rustc/sabotage-linux-tarballs
