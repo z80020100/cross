@@ -19,7 +19,7 @@ main() {
 
 install_zig() {
     local platform="${1}"
-    local version="0.11.0"
+    local version="0.17.3"
     local dst="/opt/zig"
     local arch=
     local os=
