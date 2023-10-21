@@ -62,6 +62,8 @@ use self::cross_toml::CrossToml;
 use self::errors::Context;
 use self::shell::{MessageInfo, Verbosity};
 
+use crate::docker::ImagePlatform;
+
 pub use self::errors::{install_panic_hook, install_termination_hook, Result};
 pub use self::extensions::{CommandExt, OutputExt, SafeCommand};
 pub use self::file::{pretty_path, ToUtf8};
@@ -762,7 +764,7 @@ pub fn setup(
     let uses_xargo = !uses_build_std && config.xargo(&target).unwrap_or(!target.is_builtin());
     let uses_zig = config.zig(&target).unwrap_or(false);
     let zig_version = config.zig_version(&target)?;
-    let image = match docker::get_image(&config, &target, uses_zig) {
+    let mut image = match docker::get_image(&config, &target, uses_zig) {
         Ok(i) => i,
         Err(docker::GetImageError::NoCompatibleImages(..))
             if config.dockerfile(&target)?.is_some() =>
@@ -775,6 +777,17 @@ pub fn setup(
             return Ok(None);
         }
     };
+    if config.dockerfile(&target)?.is_some() {
+        if TargetTriple::Aarch64UnknownLinuxGnu == host {
+            msg_info.warn(format_args!(
+                "[patch] Force using host platform {} to build custom docker image for target {}",
+                host, target
+            ))?;
+            image
+                .toolchain
+                .push(ImagePlatform::AARCH64_UNKNOWN_LINUX_GNU.to_owned());
+        }
+    }
     let default_toolchain = QualifiedToolchain::default(&config, msg_info)?;
     let mut toolchain = if let Some(channel) = &args.channel {
         let picked_toolchain: Toolchain = channel.parse()?;
